@@ -1,9 +1,9 @@
 {
-    "schema_version": "v1",
+    "schema_version": "v2",
     "name_for_human": "slide generator",
     "name_for_model": "slide_generator",
     "description_for_human": "Easily create slides from your conversations",
-    "description_for_model": "Plugin for creating slides out of a json object",
+    "description_for_model": "Plugin for creating slides out of a json object which contains slide structure in it",
     "auth": {
       "type": "none"
     },

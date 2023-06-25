@@ -1,7 +1,7 @@
 print('running tests for the project')
 
 # Path: main.py
-from main import create_presentation, delete_presentation
+from utils import create_presentation_new
 from pptx import Presentation
 import io
 from pptx.util import Pt
@@ -138,30 +138,30 @@ new_schema = {
   ]
 }
 
-def create_presentation_new(slide_data):
-    presentation = Presentation()
-    index = 0
-    for slide in slide_data:
+# def create_presentation_new(slide_data):
+#     presentation = Presentation()
+#     index = 0
+#     for slide in slide_data:
         
-        heading = slide.get("heading", "")
-        content = slide.get("content", [])
-        layout = None
-        if index == 0:
-          layout = presentation.slide_layouts[2]  
-        else:
-          layout = presentation.slide_layouts[1]
-        slide = presentation.slides.add_slide(layout)
-        title = slide.shapes.placeholders[0].text_frame
-        title.text = heading
+#         heading = slide.get("heading", "")
+#         content = slide.get("content", [])
+#         layout = None
+#         if index == 0:
+#           layout = presentation.slide_layouts[2]  
+#         else:
+#           layout = presentation.slide_layouts[1]
+#         slide = presentation.slides.add_slide(layout)
+#         title = slide.shapes.placeholders[0].text_frame
+#         title.text = heading
         
-        content_holder = slide.shapes.placeholders[1].text_frame
+#         content_holder = slide.shapes.placeholders[1].text_frame
 
-        for paragraph in content:
-            content_holder.add_paragraph().text = paragraph
+#         for paragraph in content:
+#             content_holder.add_paragraph().text = paragraph
 
-    # create a filepath for the presentation
-    filepath = "./presentations/presentation.pptx"
-    presentation.save(filepath)
+#     # create a filepath for the presentation
+#     filepath = "./presentations/presentation.pptx"
+#     presentation.save(filepath)
 
 
 create_presentation_new(new_schema)

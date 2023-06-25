@@ -31,3 +31,10 @@ def create_presentation_new(slide_data, PRESENTATION_DIR):
 
     presentation.save(presentation_path)
     return presentation_path
+
+
+def delete_presentation(presentation_id):
+    # Create a file path for the presentation
+    presentation_path = presentation_id
+    # Delete the file
+    os.remove(presentation_path)

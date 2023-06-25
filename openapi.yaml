@@ -6,7 +6,7 @@ info:
 servers:
   - url: http://localhost:5003
 paths:
-  /presentation/link_new:
+  /presentation/link:
     post:
       operationId: getPresentationLink
       summary: Get the download link for the presentation file
@@ -23,23 +23,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/presentationLinkResponse'
-    # /presentation/link:
-    # post:
-    #   operationId: getPresentationLink
-    #   summary: Get the download link for the presentation file
-    #   requestBody:
-    #     required: true
-    #     content:
-    #       application/json:
-    #         schema:
-    #           $ref: '#/components/schemas/addPresentationRequest'
-    #   responses:
-    #     "200":
-    #       description: OK
-    #       content:
-    #         application/json:
-    #           schema:
-    #             $ref: '#/components/schemas/presentationLinkResponse'
+
   /presentation/download/{presentation_id}:
     get:
       operationId: downloadPresentation
@@ -60,31 +44,10 @@ paths:
                 format: binary
 components:
   schemas:
-    # addPresentationRequest:
-    #   type: object
-    #   required:
-    #   - slide_data
-    #   properties:
-    #     slide_data:
-    #       type: array
-    #       description: You need to pass in an object with slide_data then an array of objects in a json array with a heading (string), body (string) and layout (int) in each object
-    #       items:
-    #         type: object
-    #         required:
-    #         - heading
-    #         - body
-    #         - layout
-    #         properties:
-    #           heading:
-    #             type: string
-    #           body: 
-    #             type: string
-    #           layout:
-    #             type: integer
-      addPresentationRequest:
+    addPresentationRequest:
       type: object
       required:
-      - slide_data
+        - slide_data
       properties:
         slide_data:
           type: array
@@ -92,15 +55,15 @@ components:
           items:
             type: object
             required:
-            - heading
-            - content
+              - heading
+              - content
             properties:
               heading:
                 type: string
               content: 
                 type: array
                 items:
-                    type: string
+                  type: string
     presentationLinkResponse:
       type: object
       properties:
