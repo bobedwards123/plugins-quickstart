@@ -7,31 +7,58 @@ import uuid
 import os
 import io
 from pptx import Presentation
+
+from pptx.enum.shapes import MSO_SHAPE_TYPE
+
+
 from pptx.util import Inches
 
 app = quart_cors.cors(quart.Quart(__name__), allow_origin="https://chat.openai.com")
 
 # Directory to store generated presentations
 PRESENTATION_DIR = "./presentations"
+TEMPLATE_DIR = "./templates"
 
-def create_presentation(slide_data):
+
+
+def create_presentation(slide_data, template=None):
     # Generate a unique identifier for this presentation
     presentation_id = str(uuid.uuid4())
     # Create a file path for the presentation
     presentation_path = os.path.join(PRESENTATION_DIR, f"{presentation_id}.pptx")
-    # Create the presentation and save it to the file
-    presentation = Presentation()
+
+    if template:
+        template_link = os.path.join(TEMPLATE_DIR, template)
+        presentation = Presentation(template_link)
+    else:
+        presentation = Presentation()
+
     for slide_dict in slide_data:
-        slide_layout = presentation.slide_layouts[slide_dict['layout']]
+        # Iterate through slide layouts until we find one with title and content placeholders
+        for layout in presentation.slide_layouts:
+            placeholders = layout.placeholders
+            if any(ph.placeholder_format.idx == 0 for ph in placeholders) and \
+               any(ph.placeholder_format.idx == 1 for ph in placeholders):
+                slide_layout = layout
+                break
+        else:
+            print("Error: No suitable slide layout found")
+            continue
+
         slide = presentation.slides.add_slide(slide_layout)
-        title = slide.shapes.title
+        title = slide.placeholders[0]
         content = slide.placeholders[1]
         title.text = slide_dict['heading']
         content.text = slide_dict['body']
+
     presentation.save(presentation_path)
-    # Return the file path
     return presentation_path
 
+def delete_presentation(presentation_id):
+    # Create a file path for the presentation
+    presentation_path = presentation_id
+    # Delete the file
+    os.remove(presentation_path)
 
 @app.post('/presentation/link')
 async def presentation_link():
@@ -47,6 +74,12 @@ async def presentation_link():
 async def presentation_download(presentation_id):
     # Serve the file from the presentations directory
     return await send_from_directory(PRESENTATION_DIR, presentation_id, as_attachment=True)
+
+# create and endpoint to get the template
+@app.get('/templates/<template_id>')
+async def template_download(template_id):
+    # Serve the file from the presentations directory
+    return await send_from_directory(TEMPLATE_DIR, template_id, as_attachment=True)
 
 @app.get("/logo.png")
 async def plugin_logo():
